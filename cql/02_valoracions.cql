@@ -1,0 +1,53 @@
+-- Valoracións para a táboa valoracions_por_concerto (parte 2).
+-- docker compose exec cass1 cqlsh -f /cql/02_valoracions.cql
+
+USE app;
+
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('neboa-16', '2027-07-16 23:30:00+0200', 'martin', 5.0, 'O mellor do festival');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('trebon-16', '2027-07-16 23:43:00+0200', 'gael', 5.0, 'Impresionante');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('marusia-16', '2027-07-16 23:47:00+0200', 'lucia', 3.0, 'Ben, sen máis');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('dj-salitre-16', '2027-07-16 23:49:00+0200', 'helena', 4.0, 'Gran ambiente');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('trebon-16', '2027-07-17 00:04:00+0200', 'diego', 4.0, 'Gran ambiente');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('neboa-16', '2027-07-17 00:09:00+0200', 'oscar', 4.0, 'Gran ambiente');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('trebon-16', '2027-07-17 00:11:00+0200', 'oscar', 1.0, 'Non me gustou');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('dj-salitre-16', '2027-07-17 00:17:00+0200', 'xian', 5.0, 'O mellor do festival');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('trebon-16', '2027-07-17 00:28:00+0200', 'helena', 2.0, 'Moita xente, pouco son');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('dj-salitre-16', '2027-07-17 00:36:00+0200', 'diego', 1.0, 'Decepcionante');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('marusia-16', '2027-07-17 00:49:00+0200', 'bieito', 1.0, 'Non me gustou');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('neboa-16', '2027-07-17 00:51:00+0200', 'lucia', 5.0, 'O mellor do festival');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('marusia-16', '2027-07-17 00:57:00+0200', 'nerea', 5.0, 'O mellor do festival');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('trebon-16', '2027-07-17 01:03:00+0200', 'ana', 5.0, 'Impresionante');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('trebon-16', '2027-07-17 01:22:00+0200', 'fran', 1.0, 'Non me gustou');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('dj-salitre-16', '2027-07-17 01:33:00+0200', 'martin', 3.0, 'Correcto');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('neboa-16', '2027-07-17 01:33:00+0200', 'helena', 1.0, 'Non me gustou');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('neboa-16', '2027-07-17 01:38:00+0200', 'nerea', 4.0, 'Moi bo');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('trebon-16', '2027-07-17 01:40:00+0200', 'elva', 4.0, 'Repetiría');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('dj-salitre-16', '2027-07-17 02:07:00+0200', 'oscar', 4.0, 'Gran ambiente');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('neboa-16', '2027-07-17 02:08:00+0200', 'celia', 4.0, 'Moi bo');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('marusia-16', '2027-07-17 02:50:00+0200', 'xian', 5.0, 'O mellor do festival');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('ondas-curtas-17', '2027-07-17 23:08:00+0200', 'xian', 5.0, 'Concertazo');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('cantigas-17', '2027-07-17 23:26:00+0200', 'xian', 5.0, 'Impresionante');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('lua-chea-17', '2027-07-17 23:30:00+0200', 'paula', 4.0, 'Repetiría');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('lua-chea-17', '2027-07-17 23:33:00+0200', 'helena', 4.0, 'Gran ambiente');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('ondas-curtas-17', '2027-07-17 23:46:00+0200', 'elva', 5.0, 'O mellor do festival');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('sereas-17', '2027-07-18 00:04:00+0200', 'elva', 4.0, 'Gran ambiente');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('cantigas-17', '2027-07-18 00:20:00+0200', 'icia', 4.0, 'Moi bo');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('cantigas-17', '2027-07-18 00:28:00+0200', 'bieito', 4.0, 'Gran ambiente');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('sereas-17', '2027-07-18 00:48:00+0200', 'ana', 5.0, 'Impresionante');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('ondas-curtas-17', '2027-07-18 00:57:00+0200', 'fran', 4.0, 'Repetiría');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('lua-chea-17', '2027-07-18 01:12:00+0200', 'diego', 2.0, 'Atrasouse moito');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('sereas-17', '2027-07-18 01:14:00+0200', 'fran', 2.0, 'Atrasouse moito');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('ondas-curtas-17', '2027-07-18 02:08:00+0200', 'oscar', 3.0, 'Ben, sen máis');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('bretema-18', '2027-07-18 22:42:00+0200', 'ana', 5.0, 'Concertazo');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('os-da-ria-18', '2027-07-18 23:09:00+0200', 'xian', 5.0, 'O mellor do festival');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('furacan-18', '2027-07-18 23:11:00+0200', 'nerea', 4.0, 'Moi bo');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('bretema-18', '2027-07-18 23:17:00+0200', 'lucia', 3.0, 'Son mellorable');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('furacan-18', '2027-07-18 23:41:00+0200', 'lucia', 2.0, 'Moita xente, pouco son');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('mare-alta-18', '2027-07-19 00:09:00+0200', 'oscar', 3.0, 'Son mellorable');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('mare-alta-18', '2027-07-19 00:32:00+0200', 'ana', 4.0, 'Moi bo');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('furacan-18', '2027-07-19 00:58:00+0200', 'elva', 3.0, 'Son mellorable');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('os-da-ria-18', '2027-07-19 01:02:00+0200', 'paula', 4.0, 'Repetiría');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('os-da-ria-18', '2027-07-19 01:36:00+0200', 'martin', 4.0, 'Repetiría');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('mare-alta-18', '2027-07-19 01:38:00+0200', 'diego', 5.0, 'O mellor do festival');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('mare-alta-18', '2027-07-19 01:56:00+0200', 'xian', 3.0, 'Ben, sen máis');
+INSERT INTO valoracions_por_concerto (concerto_id, data_hora, usuario, nota, comentario) VALUES ('mare-alta-18', '2027-07-19 02:23:00+0200', 'bieito', 5.0, 'Concertazo');

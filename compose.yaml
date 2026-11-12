@@ -1,0 +1,58 @@
+# Obradoiro: clúster de Cassandra con tres nodos (app do festival Son do Mar, ficticio)
+# Os nodos arrancan un tras outro: Cassandra non admite que se unan varios á vez.
+name: obradoiro-cassandra
+
+x-cassandra: &cassandra
+  image: cassandra:5.0.8
+  environment:
+    CASSANDRA_CLUSTER_NAME: SonDoMar
+    CASSANDRA_SEEDS: cass1                          # nodo de referencia para unirse ao clúster
+    CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+    CASSANDRA_DC: dc1                               # centro de datos
+    CASSANDRA_RACK: rack1
+    CASSANDRA_NUM_TOKENS: 16                        # nodos virtuais (tramos do anel) por nodo
+    MAX_HEAP_SIZE: 1G                               # memoria de Java por nodo (por defecto collería moita máis)
+    HEAP_NEWSIZE: 200M
+  networks: [festival]
+  healthcheck:
+    test: ["CMD-SHELL", "cqlsh -e 'describe keyspaces' > /dev/null 2>&1"]
+    interval: 15s
+    timeout: 10s
+    retries: 20
+    start_period: 60s
+
+services:
+  cass1:
+    <<: *cassandra
+    hostname: cass1
+    volumes:
+      - cass1_datos:/var/lib/cassandra
+      - ./cql:/cql:ro
+
+  cass2:
+    <<: *cassandra
+    hostname: cass2
+    volumes:
+      - cass2_datos:/var/lib/cassandra
+      - ./cql:/cql:ro
+    depends_on:
+      cass1:
+        condition: service_healthy
+
+  cass3:
+    <<: *cassandra
+    hostname: cass3
+    volumes:
+      - cass3_datos:/var/lib/cassandra
+      - ./cql:/cql:ro
+    depends_on:
+      cass2:
+        condition: service_healthy
+
+volumes:
+  cass1_datos:
+  cass2_datos:
+  cass3_datos:
+
+networks:
+  festival:
