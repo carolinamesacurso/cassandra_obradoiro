@@ -45,3 +45,105 @@ UN  172.18.0.2  119.83 KiB  16      64.7%             93b869b9-db8e-4557-b33b-f7
 ```
 
 ## Primeras consultas
+
+* WITH CLUSTERING ORDER BY (data_hora DESC, usuario ASC);
+```
+cqlsh:app> select * from valoracions_por_concerto where concerto_id = 'neboa-16';
+
+ concerto_id | data_hora                       | usuario | comentario           | nota
+-------------+---------------------------------+---------+----------------------+------
+    neboa-16 | 2027-07-17 00:08:00.000000+0000 |   celia |               Moi bo |    4
+    neboa-16 | 2027-07-16 23:38:00.000000+0000 |   nerea |               Moi bo |    4
+    neboa-16 | 2027-07-16 23:33:00.000000+0000 |  helena |        Non me gustou |    1
+    neboa-16 | 2027-07-16 22:51:00.000000+0000 |   lucia | O mellor do festival |    5
+    neboa-16 | 2027-07-16 22:09:00.000000+0000 |   oscar |        Gran ambiente |    4
+    neboa-16 | 2027-07-16 21:30:00.000000+0000 |  martin | O mellor do festival |    5
+
+(6 rows)
+```
+* Solo las 3 primeras d ese concerto 
+
+```
+cqlsh:app> select * from valoracions_por_concerto where concerto_id = 'neboa-16' LIMIT 3;
+
+ concerto_id | data_hora                       | usuario | comentario    | nota
+-------------+---------------------------------+---------+---------------+------
+    neboa-16 | 2027-07-17 00:08:00.000000+0000 |   celia |        Moi bo |    4
+    neboa-16 | 2027-07-16 23:38:00.000000+0000 |   nerea |        Moi bo |    4
+    neboa-16 | 2027-07-16 23:33:00.000000+0000 |  helena | Non me gustou |    1
+
+(3 rows)
+```
+
+* Nota media y número de valoracions
+
+```
+cqlsh:app> select avg(nota) from valoracions_por_concerto where concerto_id = 'neboa-16';
+
+ system.avg(nota)
+------------------
+          3.83333
+
+(1 rows)
+
+
+cqlsh:app> select count(nota) from valoracions_por_concerto where concerto_id = 'neboa-16';
+
+ system.count(nota)
+--------------------
+                  6
+
+(1 rows)
+
+```
+
+
+* Valoraciones do usuario Xian
+    * No deja hacer una consulta antes de añadir la particion key  en la consulta y la siguiente pk que es data_hora
+
+```
+cqlsh:app> select * from valoracions_por_concerto where usuario = 'xian';
+InvalidRequest: Error from server: code=2200 [Invalid query] message="PRIMARY KEY column "usuario" cannot be restricted as preceding column "data_hora" is not restricted"
+
+cqlsh:app> select * from valoracions_por_concerto where usuario = 'xian' ALLOW FILTERING;
+
+ concerto_id     | data_hora                       | usuario | comentario           | nota
+-----------------+---------------------------------+---------+----------------------+------
+    os-da-ria-18 | 2027-07-18 21:09:00.000000+0000 |    xian | O mellor do festival |    5
+   dj-salitre-16 | 2027-07-16 22:17:00.000000+0000 |    xian | O mellor do festival |    5
+     cantigas-17 | 2027-07-17 21:26:00.000000+0000 |    xian |        Impresionante |    5
+      marusia-16 | 2027-07-17 00:50:00.000000+0000 |    xian | O mellor do festival |    5
+ ondas-curtas-17 | 2027-07-17 21:08:00.000000+0000 |    xian |           Concertazo |    5
+    mare-alta-18 | 2027-07-18 23:56:00.000000+0000 |    xian |        Ben, sen máis |    3
+
+(6 rows)
+
+```
+
+* porque se bería dehbaer pensado mejor las consultas y saturar la red pudiendo provcar caida de cluetr 
+
+```
+cqlsh:app> select * from valoracions_por_usuario where usuario = 'xian';
+
+ usuario | concerto_id     | data_hora                       | comentario           | nota
+---------+-----------------+---------------------------------+----------------------+------
+    xian |     cantigas-17 | 2027-07-17 21:26:00.000000+0000 |        Impresionante |    5
+    xian |   dj-salitre-16 | 2027-07-16 22:17:00.000000+0000 | O mellor do festival |    5
+    xian |    mare-alta-18 | 2027-07-18 23:56:00.000000+0000 |        Ben, sen máis |    3
+    xian |      marusia-16 | 2027-07-17 00:50:00.000000+0000 | O mellor do festival |    5
+    xian | ondas-curtas-17 | 2027-07-17 21:08:00.000000+0000 |           Concertazo |    5
+    xian |    os-da-ria-18 | 2027-07-18 21:09:00.000000+0000 | O mellor do festival |    5
+
+(6 rows)
+
+```
+
+
+* Que ten que facer a app se un usuario cambia a nota? A aplicación debe actualizar ambas táboas explicitamente (a táboa ordenada por concerto e valoracions_por_usuario). Para garantir que ambas operacións se executan á vez e non queda unha a medias se cae o servidor,
+
+
+*  Produciríase unha inconsistencia de datos (datos desincronizados)
+
+* Cassandra está deseñado para repartir datos entre varios nodos distintos.
+
+*  ao buscar un usuario o nodo coordinador non sabería en que nodo está ese dato. Tería que preguntarlle a todos os nodos do clúster á vez (scatter-gather), o que dispara a latencia e tira o rendemento abaixo cando o clúster crece.
