@@ -122,6 +122,7 @@ cqlsh:app> select * from valoracions_por_concerto where usuario = 'xian' ALLOW F
 
 * porque se bería dehbaer pensado mejor las consultas y saturar la red pudiendo provcar caida de cluetr 
 
+## Parte 3
 ```
 cqlsh:app> select * from valoracions_por_usuario where usuario = 'xian';
 
@@ -147,3 +148,46 @@ cqlsh:app> select * from valoracions_por_usuario where usuario = 'xian';
 * Cassandra está deseñado para repartir datos entre varios nodos distintos.
 
 *  ao buscar un usuario o nodo coordinador non sabería en que nodo está ese dato. Tería que preguntarlle a todos os nodos do clúster á vez (scatter-gather), o que dispara a latencia e tira o rendemento abaixo cando o clúster crece.
+
+## Parte 4
+
+1.  no tienen por qué estar todos en el mismo nodo. Cassandra distribuye las particiones entre los nodos del clúster utilizando el token calculado a partir de la clave de partición.
+
+3. Porque el keyspace app está configurado con un factor de replicación RF3.
+
+Esto significa que Cassandra mantiene tres copias de cada partición, distribuidas entre los tres nodos del clúster.
+
+A diferencia de proba_rf1, que solamente tiene una copia, app dispone de tres réplicas para mejorar la disponibilidad y tolerancia a fallos.
+
+4. Keyspace proba_rf1 (RF1): los conciertos cuya única réplica estaba almacenada en el nodo detenido dejan de estar disponibles. Los conciertos almacenados en los otros nodos siguen pudiéndose consultar.
+
+Keyspace app (RF3): las valoraciones siguen estando disponibles porque existen otras dos réplicas en los nodos restantes.
+
+
+## Parte 5
+
+| Nodos en marcha      | ONE (ler / escribir)| QUORUM (ler / escribir) | ALL (ler / escribir) |
+|------------|------------------|--------------------|--------------------|
+|3 | ✔            | ✔                |✔
+| 2 | ✔ | ✔                |✘
+| 1 (só cass1) | ✔             | ✘               |✘
+
+2. devuelve un error:
+
+UnavailableException o WriteTimeoutException / ReadTimeoutException, dependiendo de si se trata de una lectura o una escritura y de cuándo se produce el fallo.
+
+3. Sí, los otros dos nodos terminan teniendo esa valoración.
+
+Con nivel de consistencia ONE, basta con que una réplica confirme la escritura para que Cassandra la considere correcta.
+
+Cuando arrancan los otros dos nodos, pueden recibir los datos mediante los mecanismos de recuperación y sincronización de Cassandra
+
+4. Con tres copias, QUORUM necesita dos respuestas. Si hubiese cinco copias, necesitaría tres. Esto garantiza que responda una mayoría de las réplicas.
+
+## Parte 6 Preguntas
+
+1. MongoDB prefiere tener consistencia (dejando que todos vena el ultimo dato ) y tolerancia a partición que auqneu se divida se pueda acceder / mientras que cassandra perfriere estar disponible siempre (poder hacer todo tipo de operaciones sin mayoría) y tolerancia a partición 
+
+2. Non, usando QUORUM para escribir e ler con 3 copias non podemos ler un dato atrasado. Pola contra, usando ONE en ambas operacións si que é posible ler un dato desactualizado.
+
+3. saldo quorum y valoración one , ya que en uno estamos hablando de datos ensibles como pueden ser cantidades moenyarias para realizar operaciones en tiempo real , frente a una valoración la cual es meramente informativa para el ususario , es decir , uan recomendación y su uso va a acabar en simplemente mostrarse
