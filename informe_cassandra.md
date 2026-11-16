@@ -28,10 +28,9 @@ obradoiro-cassandra-cass3-1   cassandra:5.0.8   "docker-entrypoint.s…"   cass3
 2. Pregunta:
     * En cassandra no existen nodos primarios ni secundarios ,
     ya que todos son iguales 
-    * Representa la semilla inicial de los nodos , esto para que servir como punto de contacto para la configuración y los nodos nuevos
+    * Representa la semilla inicial de los nodos , esto para que servir como punto de contacto para la configuración y los nodos nuevos(CONEXIÓN NUEVOS NODOS PUERTA PARA ENTRAR)
 3. Pregunta
-    * La etiqueta del compose.yaml 'CASSANDRA_NUM_TOKENS: 16' representa la cantidad de nodos virtuales que gestiona cada máquina 
-
+    * La etiqueta del compose.yaml 'CASSANDRA_NUM_TOKENS: 16' representa la cantidad de nodos virtuales que gestiona cada máquina (Número de espacios que hay de ese anel(información)tramos de ese anel para repartir información)
 ```
 (.venv) carolinamesamartine@026P230B:~/obradoiroCassanadra/Obradoiro_Cassandra$ docker compose exec cass1 nodetool status
 Datacenter: dc1
@@ -119,10 +118,9 @@ cqlsh:app> select * from valoracions_por_concerto where usuario = 'xian' ALLOW F
 (6 rows)
 
 ```
-
+* todo el anillo de datos y baixa laas particions - es muy pesada la consulta 
 * porque se bería dehbaer pensado mejor las consultas y saturar la red pudiendo provcar caida de cluetr 
 
-## Parte 3
 ```
 cqlsh:app> select * from valoracions_por_usuario where usuario = 'xian';
 
@@ -145,13 +143,13 @@ cqlsh:app> select * from valoracions_por_usuario where usuario = 'xian';
 
 *  Produciríase unha inconsistencia de datos (datos desincronizados)
 
-* Cassandra está deseñado para repartir datos entre varios nodos distintos.
+* Cassandra está deseñado para repartir datos entre varios nodos distintos. - optimizza la tabla para que las consultas sean cosas mucho más rapido
 
 *  ao buscar un usuario o nodo coordinador non sabería en que nodo está ese dato. Tería que preguntarlle a todos os nodos do clúster á vez (scatter-gather), o que dispara a latencia e tira o rendemento abaixo cando o clúster crece.
 
 ## Parte 4
 
-1.  no tienen por qué estar todos en el mismo nodo. Cassandra distribuye las particiones entre los nodos del clúster utilizando el token calculado a partir de la clave de partición.
+1.  no tienen por qué estar todos en el mismo nodo. Cassandra distribuye las particiones entre los nodos del clúster utilizando el token calculado a partir de la clave de partición.(hay genet que 3 o 2)
 
 3. Porque el keyspace app está configurado con un factor de replicación RF3.
 
@@ -163,6 +161,11 @@ A diferencia de proba_rf1, que solamente tiene una copia, app dispone de tres r�
 
 Keyspace app (RF3): las valoraciones siguen estando disponibles porque existen otras dos réplicas en los nodos restantes.
 
+* Apuntes
+    * select * from concertos ; debería de fallarporque siguen sin estar todos los nodos activos
+    * select * from concertos where neboa 16 - como está en el nodo2 y se pararon el 1 y el 3 
+    * acude a un dato que está en el que no está pausado
+    * no puede pedir todos y darme solo los que tiene 
 
 ## Parte 5
 
@@ -175,14 +178,16 @@ Keyspace app (RF3): las valoraciones siguen estando disponibles porque existen o
 2. devuelve un error:
 
 UnavailableException o WriteTimeoutException / ReadTimeoutException, dependiendo de si se trata de una lectura o una escritura y de cuándo se produce el fallo.
+que se necesita x replicas y solo tiene y activas  - UnavailableException (en ejemplo que nos compartió por pantalla)
 
 3. Sí, los otros dos nodos terminan teniendo esa valoración.
 
 Con nivel de consistencia ONE, basta con que una réplica confirme la escritura para que Cassandra la considere correcta.
 
-Cuando arrancan los otros dos nodos, pueden recibir los datos mediante los mecanismos de recuperación y sincronización de Cassandra
+Cuando arrancan los otros dos nodos, pueden recibir los datos mediante los mecanismos de recuperación y sincronización de Cassandra (lo sincroniza solo)
 
 4. Con tres copias, QUORUM necesita dos respuestas. Si hubiese cinco copias, necesitaría tres. Esto garantiza que responda una mayoría de las réplicas.
+
 
 ## Parte 6 Preguntas
 
@@ -191,3 +196,6 @@ Cuando arrancan los otros dos nodos, pueden recibir los datos mediante los mecan
 2. Non, usando QUORUM para escribir e ler con 3 copias non podemos ler un dato atrasado. Pola contra, usando ONE en ambas operacións si que é posible ler un dato desactualizado.
 
 3. saldo quorum y valoración one , ya que en uno estamos hablando de datos ensibles como pueden ser cantidades moenyarias para realizar operaciones en tiempo real , frente a una valoración la cual es meramente informativa para el ususario , es decir , uan recomendación y su uso va a acabar en simplemente mostrarse
+
+se desactualizan porque si haces write a uno los doemas tardan en comunicarse un tiempo 
+y puedes leer datos desactualizados al leer de 2 o de 3 por exemplo
